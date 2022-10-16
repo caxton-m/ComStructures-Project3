@@ -1,5 +1,2 @@
 ﻿  project3.cpp
-C:\Users\Owner\Documents\Fall 2022\Computing Structures\projects\Project3\Project3\project3.cpp(89,7): warning C4101: 'command': unreferenced local variable
-project3.obj : error LNK2019: unresolved external symbol "public: __cdecl DataFrame::DataFrame(int,int)" (??0DataFrame@@QEAA@HH@Z) referenced in function main
-project3.obj : error LNK2019: unresolved external symbol "public: void __cdecl DataFrame::readCSV(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >)" (?readCSV@DataFrame@@QEAAXV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z) referenced in function main
-C:\Users\Owner\Documents\Fall 2022\Computing Structures\projects\Project3\x64\Debug\Project3.exe : fatal error LNK1120: 2 unresolved externals
+  Project3.vcxproj -> C:\Users\Owner\Documents\Fall 2022\Computing Structures\projects\Project3\x64\Debug\Project3.exe
