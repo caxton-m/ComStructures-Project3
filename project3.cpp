@@ -101,10 +101,74 @@ public:
 	DFrow operator[](int i) {}
 
 	// File reading Method
-	void readCSV(string filename, string headerPresence) {}
+	void readCSV(string filename, string headerPresence) {
+
+		// Read the file 
+		ifstream ip(filename);
+
+		// Check to see if the file exists and if it does exist print error
+		if (!ip.is_open()) cout << "Error: File Open" << endl;
+
+		// all the fields to store information of a row
+		string nametemp;
+		string sextemp;
+		string agetemp;
+		string heighttemp;
+		string weighttemp;
+		string citytemp;
+
+		while (ip.good()) {
+
+			if (headerPresence == "true") {
+
+				getline(ip, nametemp, ',');
+				getline(ip, sextemp, ',');
+				getline(ip, agetemp, ',');
+				getline(ip, heighttemp, ',');
+				getline(ip, weighttemp, ',');
+				getline(ip, citytemp, '\n');
+
+				headers.push_back(nametemp);
+				headers.push_back(sextemp);
+				headers.push_back(agetemp);
+				headers.push_back(heighttemp);
+				headers.push_back(weighttemp);
+				headers.push_back(citytemp);
+
+				headerPresence = "false";
+				continue;
+			}
+
+			getline(ip, nametemp, ',');
+			getline(ip, sextemp, ',');
+			getline(ip, agetemp, ',');
+			getline(ip, heighttemp, ',');
+			getline(ip, weighttemp, ',');
+			getline(ip, citytemp, '\n');
+
+			data.push_back({ nametemp, sextemp[0], stoi(agetemp), stoi(heighttemp)
+			, stoi(weighttemp), citytemp });
+
+		}
+
+		ip.close();
+
+		display();
+	
+	}
 
 	// Output Method
-	void display() {}
+	void display() {
+	
+		for (int i = 0; i < nCols; i++) {
+			cout << headers[i] << " ";
+		}
+		cout << endl;
+
+		for (int i = 0; i < nRows; i++) {
+			data[i].display();
+		}
+	}
 
 	// Search Record
 	DFrow searchRecord(string name) {}
@@ -157,7 +221,81 @@ int main()
 	string headerBool;
 	char command;
 
-	cin >> numRows >> numCols >> headerBool >> fileName;
+	std::cin >> numRows >> numCols >> headerBool >> fileName;
+
+
+	//// Read the file 
+	//ifstream ip(fileName);
+
+	//// Check to see if the file exists and if it does exist print error
+	//if (!ip.is_open()) cout << "Error: File Open" << endl;
+
+	//// all the fields to store information of a row
+	//string nametemp;
+	//string sextemp;
+	//string agetemp;
+	//string heighttemp;
+	//string weighttemp;
+	//string citytemp;
+	//vector<string> headers;
+	//vector<DFrow> data;
+
+
+	//while (ip.good()) {
+
+	//	if (headerBool == "true") {
+
+	//		getline(ip, nametemp, ',');
+	//		getline(ip, sextemp, ',');
+	//		getline(ip, agetemp, ',');
+	//		getline(ip, heighttemp, ',');
+	//		getline(ip, weighttemp, ',');
+	//		getline(ip, citytemp, '\n');
+
+	//		headers.push_back(nametemp);
+	//		headers.push_back(sextemp);
+	//		headers.push_back(agetemp);
+	//		headers.push_back(heighttemp);
+	//		headers.push_back(weighttemp);
+	//		headers.push_back(citytemp);
+
+	//		headerBool = "false";
+	//		continue;
+	//	}
+
+	//	getline(ip,nametemp,',');
+	//	getline(ip, sextemp, ',');
+	//	getline(ip, agetemp, ',');
+	//	getline(ip, heighttemp, ',');
+	//	getline(ip, weighttemp, ',');
+	//	getline(ip, citytemp, '\n');
+
+	//	data.push_back({ nametemp, sextemp[0], stoi(agetemp), stoi(heighttemp)
+	//		, stoi(weighttemp), citytemp });
+
+	//	//cout << headers[0] << ": " << nametemp << endl;
+	//	//cout << headers[1] <<": " << s << endl;
+	//	//cout << headers[2] <<": " << a << endl;
+	//	//cout << headers[3] <<": " << h << endl;
+	//	//cout << headers[4] <<": " << w << endl;
+	//	//cout << headers[5] <<": " << citytemp << endl;
+	//	//cout << " ------------------------- " << endl;
+	//}
+
+	//ip.close();
+
+	//for (int i = 0; i < numCols; i++) {
+	//	cout << headers[i] << " ";
+	//}
+	//cout << endl;
+
+	//for (int i = 0; i < numRows; i++) {
+	//	data[i].display();
+	//}
+
+
+
+
 
 	DataFrame* d = new DataFrame(numRows, numCols);
 
@@ -165,10 +303,10 @@ int main()
 
 	// TODO: read the commands from the input file (redirected input)
 
-	cin >> command;  // read the next command from input
+	std::cin >> command;  // read the next command from input
 
 	// while input is not end of file get next command 
-	while (!cin.eof()) {
+	while (!std::cin.eof()) {
 		// use switch cases to see the different commands to do next
 		switch (command) {
 
@@ -213,7 +351,7 @@ int main()
 		default: cout << "No commands found";   // if no command found
 		}
 
-		cin >> command; // read the next command from input 
+		std::cin >> command; // read the next command from input 
 	}
 
  	return 0;
