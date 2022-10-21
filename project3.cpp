@@ -8,7 +8,7 @@
 #include <string>  // for the string fields
 #include <vector>  // to store data
 #include <fstream> // to read the csv file
-#include <cmath>  // for math function
+#include <cmath>   // for math function
 
 using namespace std;
 
@@ -41,7 +41,7 @@ public:
 		weight = three;
 		city = ci;
 	} 
-	// TODO: write getters for each of the fields
+	// Getters for each of the fields
 	string getName() { return name; }
 	char getSex() { return sex; }
 	int getAge() { return age; }
@@ -49,7 +49,7 @@ public:
 	int getWeight() { return weight; }
 	string getCity() { return city; }
 
-	// TODO: write setters for each of the fields
+	// Setters for each of the fields
 	void setName(string x) {
 		name = x;
 	}
@@ -75,7 +75,7 @@ public:
 			getHeight() << " " << getWeight() << " " << getCity() << endl;
 	}
 	
-	// TODO: write destructor
+	// Destructor
 	~DFrow() {}
 };
 
@@ -83,9 +83,9 @@ public:
 class DataFrame
 {
 protected:
-	vector<DFrow> data; // field storeing all the data
+	vector<DFrow> data;     // field storeing all the data
 	vector<string> headers; // field to only the headers
-	int nRows, nCols; // store the number of rows and cols
+	int nRows, nCols;       // store the number of rows and cols
 
 public:
 	// Constructors
@@ -120,28 +120,26 @@ public:
 		string weighttemp;
 		string citytemp;
 
+		// while the file has information or not end of file
 		while (ip.good()) {
 
+			// if header is present in csv file
 			if (headerPresence == "true") {
 
-				getline(ip, nametemp, ',');
-				getline(ip, sextemp, ',');
-				getline(ip, agetemp, ',');
-				getline(ip, heighttemp, ',');
-				getline(ip, weighttemp, ',');
-				getline(ip, citytemp, '\n');
+				// loop through the row 
+				for (int i = 0; i < (nCols - 1);i++) {
+					getline(ip, nametemp, ',');  // store string before the next comma into nametemp
+					headers.push_back(nametemp); // add headername to headers 
+				}
 
-				headers.push_back(nametemp);
-				headers.push_back(sextemp);
-				headers.push_back(agetemp);
-				headers.push_back(heighttemp);
-				headers.push_back(weighttemp);
-				headers.push_back(citytemp);
+				getline(ip, citytemp, '\n');     // store last string in row before newline
+				headers.push_back(citytemp);     // add headername to headers
 
-				headerPresence = "false";
-				continue;
+				headerPresence = "false";        // make headerPresence false for next row in csv
+				continue;                        // continue to begining of loop
 			}
 
+			// store strings of column info before the next comma or newline
 			getline(ip, nametemp, ',');
 			getline(ip, sextemp, ',');
 			getline(ip, agetemp, ',');
@@ -149,11 +147,14 @@ public:
 			getline(ip, weighttemp, ',');
 			getline(ip, citytemp, '\n');
  
+			// add row with column info to DataFrame data with respective 
+			//    variable types
 			data.push_back({ nametemp, sextemp[0], stoi(agetemp), stoi(heighttemp)
 			, stoi(weighttemp), citytemp });
 
 		}
 
+		// close the csv file 
 		ip.close();
 	
 	}
@@ -161,11 +162,13 @@ public:
 	// Output Method
 	void display() {
 	
+		// loop through headers and display them
 		for (int i = 0; i < nCols; i++) {
 			cout << headers[i] << " ";
 		}
 		cout << endl;
 
+		// loop through row data and display them
 		for (int i = 0; i < nRows; i++) {
 			data[i].display();
 		}
@@ -174,14 +177,18 @@ public:
 	// Search Record
 	DFrow searchRecord(string name) {
 
+		// loop through all data rows
 		for (int i = 0; i < nRows; i++) {
 
+			// compare row data name with name and if they are the same
+			//   return the whole row
 			if (data[i].getName() == name) {
 				return data[i];
 			}
 			
 		}
 
+		// if name not found in DataFrame return empty row
 		return { "", ' ', -1, -1, -1, "" };
 	}
 
@@ -206,9 +213,6 @@ public:
 	// returns a data frame with a set of rLen number of rows
 	DataFrame* getRows(int* rows, int rLen) {
 
-		// rLen = y - x 
-		
-		//           [size = 5]            5  , 6
 		DataFrame* tempD = new DataFrame(rLen, nCols);
 		/*string y = "  ";
 
@@ -216,15 +220,11 @@ public:
 			tempD->setColName(i, &y[0]);
 		}*/
 
+		// loop through DataFrame and display data at index with value of rows array
 		for(int i = 0; i < rLen; i++){
 			data[rows[i]].display();
 		}
 		
-
-		//tempD->display();
-
-
-
 		return tempD;
 	}
 
@@ -234,86 +234,93 @@ public:
 	// returns the header name given a index position
 	string getHeader(int i) { return headers[i]; }
 
+	// return the data of a row given a index position
+	DFrow getData(int i) {
+		return data[i];
+	}
+
 	// Find info of a given column
 	// returns the average of the given column
 	double findAverage(int colNumber) {
-		double x = 0;
+		double x = 0;  // initialize x to zero average
 
+		// loop through all data rows
 		for (int i = 0; i < nRows; i++) {
 
-			if (colNumber == 2) {
+			if (colNumber == 2) {             // if its Age column add up ages to x 
 				x = x + data[i].getAge();
 			}
-			else if (colNumber == 3) {
+			else if (colNumber == 3) {        // if its Height column add up heights to x 
 				x = x + data[i].getHeight();
 			}
-			else {
-				x = x + data[i].getWeight();
+			else {                            // if its Weight column add up weights to x
+				x = x + data[i].getWeight();   
 			}
-			
 		}
 
-		x = x / nRows;
-
-		return x;
+		x = x / nRows;  // divide sum of column by number of rows                      
+		return x;       // return average
 	}
 
 	// returns the max of the given column
 	double findMax(int colNumber) {
-		double x = 0;
+		double x = 0;  // initialize x to zero max
 
+		// loop through all data rows
 		for (int i = 0; i < nRows; i++) {
 
-			if (colNumber == 2) {
-				x = fmax(data[i].getAge(), x);
+			if (colNumber == 2) {                 // if its Age column compare x to row i age 
+				x = fmax(data[i].getAge(), x);    // set x to bigger value
 			}
-			else if (colNumber == 3) {
-				x = fmax(data[i].getHeight(), x);
+			else if (colNumber == 3) {            // if its Height column compare x to row i height
+				x = fmax(data[i].getHeight(), x); // set x to bigger value
 			}
-			else {
-				x = fmax(data[i].getWeight(), x);
+			else {                                // if its Weight column compare x to row i weight
+				x = fmax(data[i].getWeight(), x); // set x to bigger value
 			}
-
 		}
 
-		return x;
+		return x;  // return max value 
 	}
 
 	// returns the min of the given column
 	double findMin(int colNumber) {
-		double x = 100000;
+		double x = 100000;  // initialize x to high max
 
+		// loop through all data rows
 		for (int i = 0; i < nRows; i++) {
 
-			if (colNumber == 2) {
-				x = fmin(data[i].getAge(), x);
+			if (colNumber == 2) {               // if its Age column compare x to row i age
+				x = fmin(data[i].getAge(), x);  // set x to smaller value
 			}
-			else if (colNumber == 3) {
-				x = fmin(data[i].getAge(), x);
+			else if (colNumber == 3) {          // if its Height column compare x to row i height
+				x = fmin(data[i].getAge(), x);  // set x to smaller value
 			}
-			else {
-				x = fmin(data[i].getAge(), x);
+			else {                              // if its Weight column compare x to row i weight
+				x = fmin(data[i].getAge(), x);  // set x to smaller value
 			}
-
 		}
 
-		return x;
+		return x; // return min value
 	}
 
 	// displays the frequency of the unique values
 	double frequency(int colNumber) {
-		int m = 0;
-		int f = 0;
+		int m = 0;  // initialize m to zero value
+		int f = 0;  // initialize f to zero value
 
+		// loop through all data rows
 		for (int i = 0; i < nRows; i++) {
-			if (data[i].getSex() == 'M') {
+
+			if (data[i].getSex() == 'M') {  // if row Sex is "M" increase m by 1
 				m++;
 			}
-			else {
+			else {                          // if row Sex is "F" increase f by 1
 				f++;
 			}
 		}
 
+		// display frequency of M and F
 		cout << "M: " << m << endl;
 		cout << "F: " << f;
 
@@ -327,21 +334,23 @@ public:
 // main function
 int main()
 {
-	int numRows, numCols;
-	int x, y;
-	string fileName;
-	string headerBool;
-	string temp;
-	char command;
-	DFrow tempRow;
+	int numRows, numCols;   // number of rows and columns in csv file
+	int x, y;               // temp variables to store display range
+	string fileName;        // variable to store filename 
+	string headerBool;      // variable to store if header exists
+	string temp;            // temp variable to store names
+	char command;           // command to do something
+	DFrow tempRow;          // temp row to find records 
 
+	// read the csv file information
 	std::cin >> numRows >> numCols >> headerBool >> fileName;
 
-	DataFrame* d = new DataFrame(numRows, numCols);
+	// create DataFrame with non-default constructor
+	DataFrame* d = new DataFrame(numRows, numCols); 
 
 	d->readCSV(fileName, headerBool); // use this method to read in the data from the csv file
 
-	std::cin >> command;  // read the next command from input
+	std::cin >> command;              // read the next command from input
 	cout << endl;
 
 	// while input is not end of file get next command 
@@ -381,18 +390,21 @@ int main()
 		}
 		case 'A': { // find the average of the different columns
 
-			cin >> temp;
+			// read in column name for average
+			cin >> temp; 
 
+			// if column name does not contain numbers 
 			if (temp == "Sex" || temp == "Name" || temp == "City") {
 				cout << "Average for " << temp <<" cannot be found since it is nan";
 			}
-			else if (temp == "Age") {
+
+			else if (temp == "Age") {          // if Age column return average
 				cout << "Average of " << temp << " is " << (int) d->findAverage(2);
 			}
-			else if (temp == "Height(in)") {
+			else if (temp == "Height(in)") {   // if Height column return average
 				cout << "Average of " << temp << " is " << (int) d->findAverage(3);
 			}
-			else {
+			else {                             // if Weight column return average
 				cout << "Average of " << temp << " is " << (int) d->findAverage(4);
 			}
 
@@ -401,12 +413,14 @@ int main()
 		}
 		case 'Q': { // find the frequency of unique values in the Sex columns
 
+			// read in column name for frequency
 			cin >> temp;
 
+			// if column name does not contain categorical data 
 			if (temp == "Age" || temp == "Name" || temp == "City" || temp == "Height" || temp == "Weight") {
-				cout << "Average for " << temp << " cannot be found since it is nan";
+				cout << "Frequency for " << temp << " cannot be found since it is non-categorical ";
 			}
-			else if (temp == "Sex") {
+			else if (temp == "Sex") {   // if Sex column return frequency of unique values
 				x = (int) d->frequency(1);
 			}
 
@@ -415,18 +429,20 @@ int main()
 		}
 		case 'X': { // find the max value of different columns
 
+			// read in column name for max
 			cin >> temp;
 
+			// if column name does not contain numbers
 			if (temp == "Sex" || temp == "Name" || temp == "City") {
 				cout << "Max for " << temp << " cannot be found since it is nan";
 			}
-			else if (temp == "Age") {
+			else if (temp == "Age") {           // if Age column return max
 				cout << "Max of " << temp << " is " << (int)d->findMax(2);
 			}
-			else if (temp == "Height(in)") {
+			else if (temp == "Height(in)") {   // if Height column return max
 				cout << "Max of " << temp << " is " << (int)d->findMax(3);
 			}
-			else {
+			else {                             // if Weight column return max
 				cout << "Max of " << temp << " is " << (int)d->findMax(4);
 			}
 
@@ -436,18 +452,20 @@ int main()
 
 		case 'I': { // find the min value of different columns
 
+			// read in column name for min
 			cin >> temp;
 
+			// if column name does not contain numbers
 			if (temp == "Sex" || temp == "Name" || temp == "City") {
 				cout << "Min for " << temp << " cannot be found since it is nan";
 			}
-			else if (temp == "Age") {
+			else if (temp == "Age") {           // if Age column return min
 				cout << "Min of " << temp << " is " << (int)d->findMin(2);
 			}
-			else if (temp == "Height(in)") {
+			else if (temp == "Height(in)") {    // if Height column return min
 				cout << "Min of " << temp << " is " << (int)d->findMin(3);
 			}
-			else {
+			else {                              // if Weight column return min
 				cout << "Min of " << temp << " is " << (int)d->findMin(4);
 			}
 
@@ -457,37 +475,23 @@ int main()
 
 		case 'R': { // display rows
 
+			// read in the range of display
 			cin >> x >> y;
-			int disSize = y - x;
 
-			int* disTemp = new int[disSize];
+			int disSize = y - x;              // size of array
+			int* disTemp = new int[disSize];  // array to store display range
 			
-
+			// store the display range rows in array
 			for (int i = 0; i < disSize; i++) {
 				disTemp[i] = x;
 				x++;
 			}
 
-			/*cout << endl << "Array is: ";
-
-			for (int i = 0; i < disSize; i++) {
-				cout << disTemp[i] << " ";
-			}
-
-			cout << endl << endl ;*/
-
-			DataFrame* tempD = new DataFrame(disSize + 1, numCols);
-			string y = "  ";
-
-			for (int i = 0; i < numCols; i++) {
-				tempD->setColName(i, &y[0]);
-			}
-
-			//tempD->display();
-
 			cout << endl;
-			tempD = d->getRows(disTemp, disSize);
 
+			// temp DataFrame to store range rows 
+			DataFrame* tempD = new DataFrame(disSize + 1, numCols);
+			tempD = d->getRows(disTemp, disSize);
 
 			cout << endl;
 			break;
